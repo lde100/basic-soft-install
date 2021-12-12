@@ -6,7 +6,9 @@ $run_local=$args[0]
 
 # install chocolatey if not installed
 if (!(Test-Path -Path "$env:ProgramData\Chocolatey")) {
-  Invoke-Expression((New-Object System.Net.WebClient).DownloadString('https://chocolatey.org/install.ps1'))
+  Invoke-Expression((New-Object System.Net.WebClient).DownloadString('https://chocolatey.org/install.ps1'));
+  choco feature enable -n=allowGlobalConfirmation
+  
 }
 
 if ($run_local -eq "local") {
