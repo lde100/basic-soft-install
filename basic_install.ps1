@@ -18,5 +18,5 @@ if ($run_local -eq "local") {
 else
 {
 # for each package in the list run install
-  (Invoke-webrequest -URI "https://raw.githubusercontent.com/lde100/basic-soft-install/main/basic_packages.config").Content | ForEach-Object{($_ -split "\r\n")[0]} | ForEach-Object{$_}
+  (Invoke-webrequest -URI "https://raw.githubusercontent.com/lde100/basic-soft-install/main/basic_packages.config").Content | ForEach-Object{($_ -split "\r\n")[0]} | ForEach-Object -Process {$_}
 }
