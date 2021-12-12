@@ -11,7 +11,7 @@ Set-ExecutionPolicy Bypass -Scope Process -Force
 ```
 After that, run the following:
 ```console
-Invoke-Expression((New-Object System.Net.WebClient).DownloadString('https://raw.githubusercontent.com/lde100/basic-soft-install/main/basic_install.ps1'))
+Invoke-Expression((New-Object System.Net.WebClient).DownloadString('https://raw.githubusercontent.com/lde100/basic-soft-install/main/package1.ps1'))
 ```
 It downloads the chocolatey script and executes it.
 
