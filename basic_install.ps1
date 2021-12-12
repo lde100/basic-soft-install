@@ -13,7 +13,7 @@ if (!(Test-Path -Path "$env:ProgramData\Chocolatey")) {
 
 if ($run_local -eq "local") {
 # for each package in the list run install
-  Get-Content ".\packages.config" | ForEach-Object{($_ -split "\r\n")[0]} | ForEach-Object{choco install -y $_}
+  Get-Content ".\basic_packages.config" | ForEach-Object{($_ -split "\r\n")[0]} | ForEach-Object{choco install -y $_}
 }
 else
 {
