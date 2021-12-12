@@ -1,5 +1,6 @@
 # basic-soft-install
 Basic Software Installation
+
 When executed, the script checks if installed or installs `chocolatey` on the local machine and then installs all applications defined in the `packages` config file.
 
 ## Install application list from Github:
