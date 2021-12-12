@@ -11,14 +11,14 @@ $ Set-ExecutionPolicy Bypass -Scope Process -Force
 ```
 After that, run the following:
 ```console
-$ Invoke-Expression((New-Object System.Net.WebClient).DownloadString('https://raw.githubusercontent.com/erdmenchen/chocolatey-script/master/install.ps1'))
+$ Invoke-Expression((New-Object System.Net.WebClient).DownloadString('https://raw.githubusercontent.com/lde100/basic-soft-install/main/basic_install.ps1'))
 ```
 It downloads the chocolatey script and executes it.
 
 ## Install custom (local) application list:
-Download the `install.ps1` file from this repository:
+Download the `basic_install.ps1` file from this repository:
 ```
-https://raw.githubusercontent.com/erdmenchen/chocolatey-script/master/install.ps1
+https://raw.githubusercontent.com/lde100/basic-soft-install/main/basic_install.ps1
 ```
 
 Create a `packages.config` file in the same directory, add the chocolatey app names line by line and execute the script in an admin Powershell
