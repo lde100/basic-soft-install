@@ -21,3 +21,9 @@ choco feature enable -n=allowGlobalConfirmation;
 Write-Output "Enable Dark Mode"
 Set-ItemProperty -Path HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\Themes\Personalize -Name SystemUsesLightTheme -Value 0 -Type Dword -Force
 Set-ItemProperty -Path HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\Themes\Personalize -Name AppsUseLightTheme -Value 0 -Type Dword -Force
+
+
+# Show Computer Shortcut
+Write-Output "Show Computer Shortcut"
+Set-ItemProperty -Path HKCU:\Software\Microsoft\Windows\CurrentVersion\Policies\NonEnum -Name {20D04FE0-3AEA-1069-A2D8-08002B30309D} -Value 0 -Type Dword -Force
+
