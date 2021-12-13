@@ -58,4 +58,4 @@ $RegValue = "Arbeitsplatz"+ $env:COMPUTERNAME
     If (!(Test-Path $RegPath)) {
         New-Item $RegPath
     }
-    Set-ItemProperty $RegPath $RegKey -Value $RegValue -Type Sz -Force
+    Set-ItemProperty $RegPath $RegKey -Value $RegValue -Type String -Force
