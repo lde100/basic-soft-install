@@ -31,4 +31,4 @@ $RegKey = "{20D04FE0-3AEA-1069-A2D8-08002B30309D}"
     If (!(Test-Path $RegPath)) {
         New-Item $RegPath
     }
-    Set-ItemProperty $RegPath $RegKey -Value 00000000 -Type Dword -Force
+    Set-ItemProperty $RegPath $RegKey -Value 0 -Type Dword -Force
