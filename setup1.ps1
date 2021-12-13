@@ -17,3 +17,7 @@ choco feature enable -n=allowGlobalConfirmation;
     }
     Set-ItemProperty $WebSearch DisableWebSearch -Value 1 
 
+# Enable Dark Mode
+Write-Output "Enable Dark Mode"
+Set-ItemProperty -Path HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\Themes\Personalize -Name SystemUsesLightTheme -Value 0 -Type Dword -Force
+Set-ItemProperty -Path HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\Themes\Personalize -Name AppsUseLightTheme -Value 0 -Type Dword -Force
