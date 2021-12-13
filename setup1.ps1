@@ -50,3 +50,7 @@ Set-ItemProperty -Path HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\
 Write-Output "Show File Extensions"
 Set-ItemProperty -Path HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced -Name HideFileExt -Value 0 -Type Dword -Force
 
+# Rename This PC
+Write-Output "Rename This PC"
+Set-ItemProperty -Path HKCU:Software\Microsoft\Windows\CurrentVersion\Explorer\CLSID -Name {20D04FE0-3AEA-1069-A2D8-08002B30309D} -Value Arbeitsplatz %ComputerName% -Type Dword -Force
+
