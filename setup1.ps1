@@ -31,3 +31,9 @@ $RegKey = "{20D04FE0-3AEA-1069-A2D8-08002B30309D}"
         New-Item $RegPath
     }
     Set-ItemProperty $RegPath $RegKey -Value 0 -Type Dword -Force
+    
+# Disable Taskbar Widgets
+Write-Output "Disable Taskbar Widgets"
+Set-ItemProperty -Path HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Advanced -Name TaskbarDa -Value 0 -Type Dword -Force
+Set-ItemProperty -Path HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Advanced -Name TaskbarMn -Value 0 -Type Dword -Force
+Set-ItemProperty -Path HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Advanced -Name ShowTaskViewButton -Value 0 -Type Dword -Force
