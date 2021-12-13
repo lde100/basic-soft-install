@@ -43,5 +43,5 @@ Write-Output "Disable Taskbar Search"
 Set-ItemProperty -Path HKCU:\Software\Microsoft\Windows\CurrentVersion\Search -Name SearchboxTaskbarMode -Value 0 -Type Dword -Force
 
 # Set File Explorer to open This PC
-Write-Output "Disable Taskbar Search"
+Write-Output "Set File Explorer to open This PC"
 Set-ItemProperty -Path HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced -Name LaunchTo -Value 1 -Type Dword -Force
