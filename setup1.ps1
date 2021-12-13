@@ -53,9 +53,9 @@ Set-ItemProperty -Path HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\
 # Rename This PC
 Write-Output "Rename This PC"
 $RegPath = "HKCU:Software\Microsoft\Windows\CurrentVersion\Explorer\CLSID\{20D04FE0-3AEA-1069-A2D8-08002B30309D}"
-$RegKey = "LocalizedString"
+$RegKey = "(Standard)"
 $RegValue = "Arbeitsplatz "+ $env:COMPUTERNAME
     If (!(Test-Path $RegPath)) {
         New-Item $RegPath
     }
-    Set-ItemProperty $RegPath $RegKey -Value $RegValue -Type ExpandString -Force
+    Set-ItemProperty $RegPath $RegKey -Value $RegValue -Type String -Force
