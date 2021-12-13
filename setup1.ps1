@@ -53,7 +53,7 @@ Set-ItemProperty -Path HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\
 # Rename This PC
 Write-Output "Rename This PC"
 $RegPath = "HKCU:Software\Microsoft\Windows\CurrentVersion\Explorer\CLSID\{20D04FE0-3AEA-1069-A2D8-08002B30309D}"
-$RegKey = ‘(Default)’
+$RegKey = "(Default)"
 $RegValue = "Arbeitsplatz "+ $env:COMPUTERNAME
     If (!(Test-Path $RegPath)) {
         New-Item $RegPath
@@ -63,7 +63,7 @@ $RegValue = "Arbeitsplatz "+ $env:COMPUTERNAME
 # Rename System Drive
 Write-Output "Rename System Drive"
 $RegPath = "HKCU:Software\Classes\Applications\Explorer.exe\Drives\C\DefaultLabel"
-$RegKey = ‘(Default)’
+$RegKey = "(Default)"
 $RegValue = "SYSTEM "+ $env:COMPUTERNAME
     If (!(Test-Path $RegPath)) {
         New-Item $RegPath
