@@ -66,6 +66,10 @@ $RegPath = "HKCU:Software\Classes\Applications\Explorer.exe\Drives\C\DefaultLabe
 $RegKey = "(Default)"
 $RegValue = "SYSTEM "+ $env:COMPUTERNAME
     If (!(Test-Path $RegPath)) {
+        New-Item HKCU:Software\Classes\Applications
+        New-Item HKCU:Software\Classes\Applications\Explorer.exe
+        New-Item HKCU:Software\Classes\Applications\Explorer.exe\Drives
+        New-Item HKCU:Software\Classes\Applications\Explorer.exe\Drives\C
         New-Item $RegPath
     }
     Set-ItemProperty $RegPath $RegKey -Value $RegValue -Type String -Force
