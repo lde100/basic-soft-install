@@ -4,7 +4,7 @@ Write-Output "`nInstall PacketManager and Basic Software:`n"
 iex ((New-Object System.Net.WebClient).DownloadString('https://chocolatey.org/install.ps1')); 
 SET "PATH=%PATH%;%ALLUSERSPROFILE%\chocolatey\bin";
 choco feature enable -n=allowGlobalConfirmation;
-choco install chocolateygui googlechrome adobereader microsoft-teams.install drawio spotify vlc irfanview irfanview-languages irfanviewplugins sharex 7zip mediainfo teamviewer vscode.install putty.install filezilla winscp.install;
+choco install chocolateygui googlechrome adobereader microsoft-teams.install discord.install drawio spotify vlc irfanview irfanview-languages irfanviewplugins sharex bitwarden 7zip advanced-renamer.install mediainfo teamviewer vscode.install putty.install filezilla winscp.install;
 
 # Windows Customize
 
