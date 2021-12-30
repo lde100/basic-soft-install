@@ -11,6 +11,16 @@ choco install  googlechrome 7zip vscode.install;
 
 # Windows Customize
 
+# Disable Shutdown Event-Tracker
+Write-Output "Disable Shutdown Event-Tracker`n"
+$RegPath = "HKLM:\Software\Policies\Microsoft\Windows NT\Reliability"
+$RegKey = "shutdownReasonUI"
+    If (!(Test-Path $RegPath)) {
+        New-Item $RegPath
+    }
+    Set-ItemProperty $RegPath $RegKey -Value 0 -Type Dword -Force
+    
+    
 # Enable Dark Mode
 Write-Output "Enable Dark Mode`n"
 Set-ItemProperty -Path HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\Themes\Personalize -Name SystemUsesLightTheme -Value 0 -Type Dword -Force
