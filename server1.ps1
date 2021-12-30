@@ -45,7 +45,7 @@ Set-ItemProperty -Path HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\Themes\Pe
 
 # Show Computer Shortcut on Desktop
 Write-Output "Show Computer Shortcut on Desktop`n"
-$RegPath = "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\HideDesktopIcons\NewStartPanel"
+$RegPath = "HKLM:\Software\Microsoft\Windows\CurrentVersion\Explorer\HideDesktopIcons\NewStartPanel"
 $RegKey = "{20D04FE0-3AEA-1069-A2D8-08002B30309D}"
     If (!(Test-Path $RegPath)) {
         New-Item $RegPath
