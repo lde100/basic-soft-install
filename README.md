@@ -12,3 +12,10 @@ Set-ExecutionPolicy Bypass -Scope Process -Force; Invoke-Expression((New-Object 
 
 It downloads the setup script and executes it.
 
+### Other Setup Scripts:
+Windows Server Setup:
+
+```console
+Set-ExecutionPolicy Bypass -Scope Process -Force; Invoke-Expression((New-Object System.Net.WebClient).DownloadString('https://raw.githubusercontent.com/lde100/basic-soft-install/main/server1.ps1'))
+```
+
