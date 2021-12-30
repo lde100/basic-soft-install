@@ -20,6 +20,22 @@ $RegKey = "shutdownReasonUI"
     }
     Set-ItemProperty $RegPath $RegKey -Value 0 -Type Dword -Force
     
+
+# Disable Server Manager at Logon
+Write-Output "Disable Server Manager at Logon`n"
+$RegPath = "HKLM:Software\Microsoft\ServerManager"
+$RegKey = "DoNotOpenServerManagerAtLogon"
+    If (!(Test-Path $RegPath)) {
+        New-Item $RegPath
+    }
+    Set-ItemProperty $RegPath $RegKey -Value 1 -Type Dword -Force
+$RegPath = "HKCU:Software\Microsoft\ServerManager"
+$RegKey = "CheckedUnattendLaunchSetting"
+    If (!(Test-Path $RegPath)) {
+        New-Item $RegPath
+    }
+    Set-ItemProperty $RegPath $RegKey -Value 0 -Type Dword -Force
+    
     
 # Enable Dark Mode
 Write-Output "Enable Dark Mode`n"
