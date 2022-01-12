@@ -19,3 +19,9 @@ Windows Server Setup:
 Set-ExecutionPolicy Bypass -Scope Process -Force; Invoke-Expression((New-Object System.Net.WebClient).DownloadString('https://raw.githubusercontent.com/lde100/basic-soft-install/main/server1.ps1'))
 ```
 
+Video WS Setup:
+
+```console
+Set-ExecutionPolicy Bypass -Scope Process -Force; Invoke-Expression((New-Object System.Net.WebClient).DownloadString('https://raw.githubusercontent.com/lde100/basic-soft-install/main/video-ws-setup.ps1'))
+```
+
