@@ -6,7 +6,7 @@ SET "PATH=%PATH%;%ALLUSERSPROFILE%\chocolatey\bin";
 choco feature enable -n=allowGlobalConfirmation;
 
 #Basic Setup: 
-choco install  googlechrome vlc irfanview irfanview-languages irfanviewplugins 7zip vscode.install obs-studio.install desktopinfo mediainfo teamviewer.host
+choco install  googlechrome vlc irfanview irfanview-languages irfanviewplugins 7zip vscode.install obs-studio.install  mediainfo
 
 # Windows Customize
 
