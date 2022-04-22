@@ -25,3 +25,8 @@ Video WS Setup:
 Set-ExecutionPolicy Bypass -Scope Process -Force; Invoke-Expression((New-Object System.Net.WebClient).DownloadString('https://raw.githubusercontent.com/lde100/basic-soft-install/main/video-ws-setup.ps1'))
 ```
 
+AD CLIENT Software only Setup:
+
+```console
+Set-ExecutionPolicy Bypass -Scope Process -Force; Invoke-Expression((New-Object System.Net.WebClient).DownloadString('https://raw.githubusercontent.com/lde100/basic-soft-install/main/ad-setup.ps1'))
+```
