@@ -6,7 +6,7 @@ SET "PATH=%PATH%;%ALLUSERSPROFILE%\chocolatey\bin";
 choco feature enable -n=allowGlobalConfirmation;
 
 #Basic Setup: 
-choco install  googlechrome  7zip vscode.install
+choco install  googlechrome  7zip vscode.install chocolateygui
 
 # Windows Customize
 
@@ -70,7 +70,9 @@ $RegValue = "SYSTEM "+ $env:COMPUTERNAME
     
   # Enable Remote Desktop
     Write-Output "Enable Remote Deskto`n" 
-    Set-ItemProperty ‘HKLM:\SYSTEM\CurrentControlSet\Control\Terminal Server\‘ -Name “fDenyTSConnections” -Value 0
+    Set-ItemProperty "HKLM:\SYSTEM\CurrentControlSet\Control\Terminal Server\" -Name "fDenyTSConnections" -Value 0
+    Set-ItemProperty "HKLM:\SYSTEM\CurrentControlSet\Control\Terminal Server\WinStations\RDP-Tcp\" -Name "UserAuthentication" -Value 1
+    Enable-NetFirewallRule -DisplayGroup "Remote Desktop"
    
    #Activate Windows 
     Write-Output "Activate Windows`n"
