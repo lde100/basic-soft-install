@@ -76,5 +76,5 @@ $RegValue = "SYSTEM "+ $env:COMPUTERNAME
    
    #Activate Windows 
     Write-Output "Activate Windows`n"
-   slmgr /skms 192.168.2.72
-   slmgr /ato 
+   slmgr //b /skms 192.168.2.72
+   slmgr //b /ato 
