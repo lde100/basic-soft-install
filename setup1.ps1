@@ -9,7 +9,7 @@ choco feature enable -n=allowGlobalConfirmation;
 #choco install chocolateygui googlechrome adobereader discord.install obs-studio.install drawio spotify vlc irfanview irfanview-languages irfanviewplugins sharex bitwarden 7zip advanced-renamer.install mediainfo teamviewer vscode.install putty.install filezilla winscp.install;
 
 #Basic Setup: 
-choco install chocolateygui googlechrome adobereader vlc irfanview irfanview-languages irfanviewplugins 7zip vscode.install;
+choco install chocolateygui googlechrome vlc irfanview irfanview-languages irfanviewplugins 7zip vscode.install;
 
 # Windows Customize
 
