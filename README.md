@@ -36,3 +36,11 @@ VM-Activate + Basic Soft Setup:
 ```console
 Set-ExecutionPolicy Bypass -Scope Process -Force; Invoke-Expression((New-Object System.Net.WebClient).DownloadString('https://raw.githubusercontent.com/lde100/basic-soft-install/main/vm-setup.ps1'))
 ```
+
+###Cheats
+
+Remove all pre-installed Win10 Apps:
+
+```console
+Get-AppxPackage | Remove-AppPackage
+```
