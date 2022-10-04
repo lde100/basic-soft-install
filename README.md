@@ -42,5 +42,5 @@ Set-ExecutionPolicy Bypass -Scope Process -Force; Invoke-Expression((New-Object 
 Remove all pre-installed Win10 Apps:
 
 ```console
-Get-AppxPackage | Remove-AppPackage
+Get-AppxPackage -AllUsers | where-object {$_.name –notlike “*store*”} | Remove-AppxPackage
 ```
