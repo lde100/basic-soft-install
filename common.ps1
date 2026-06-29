@@ -139,7 +139,10 @@ function Remove-Bloatware {
     # NOTE intentionally kept OUT vs. the old Win10 list:
     #   - mspaint  -> that's Paint itself on Win11
     #   - zune*    -> Microsoft.ZuneMusic IS the Win11 Media Player
-    param([string[]] $Apps = @(
+    param(
+        [string[]] $Exclude = @(),      # diese NICHT entfernen (z.B. Teams)
+        [string[]] $Additional = @(),   # zusaetzlich entfernen (z.B. neues Outlook)
+        [string[]] $Apps = @(
         "Microsoft.BingNews"
         "Microsoft.BingFinance"
         "Microsoft.BingSports"
@@ -183,8 +186,11 @@ function Remove-Bloatware {
         "*Picsart*"
         "*Photoshop*"
     ))
+    $effective = (@($Apps) + @($Additional)) |
+        Where-Object { $_ -and ($Exclude -notcontains $_) } |
+        Select-Object -Unique
     Write-Output "`nUninstalling default apps`n"
-    foreach ($app in $Apps) {
+    foreach ($app in $effective) {
         $pkg = Get-AppxPackage -Name "*$app*" -AllUsers -ErrorAction SilentlyContinue
         if ($pkg) {
             $pkg | Remove-AppxPackage -ErrorAction SilentlyContinue
@@ -193,4 +199,31 @@ function Remove-Bloatware {
                 Remove-AppxProvisionedPackage -Online -ErrorAction SilentlyContinue | Out-Null
         }
     }
+}
+
+function Install-Office {
+    # Microsoft 365 Apps (inkl. Outlook classic) via ODT.
+    # Perpetual stattdessen: -Product ProPlus2021Volume  oder  ProPlus2024Volume
+    param(
+        [string] $Product  = "O365ProPlusRetail",
+        [string] $Language = "de-de",
+        [switch] $Is32Bit
+    )
+    Write-Output "`nInstall Microsoft Office ($Product, $Language)`n"
+    $bit = if ($Is32Bit) { "" } else { "/64bit" }
+    choco install microsoft-office-deployment -y --params="'$bit /Product:$Product /Language:$Language /Exclude:Lync,Groove'"
+}
+
+function Set-DefaultBrowserChrome {
+    # Win11 schuetzt die UserChoice-Zuordnung per Hash -> reine Registry-Writes werden
+    # zurueckgesetzt. SetUserFTA (Choco: setuserfta) erzeugt den gueltigen Hash.
+    # Laeuft im Kontext des AUSFUEHRENDEN Users -> Script als der Zielnutzer (mit UAC) starten.
+    Write-Output "`nSet Chrome as default for browser + PDF`n"
+    $fta = Join-Path $env:ChocolateyInstall "bin\SetUserFTA.exe"
+    if (-not (Test-Path $fta)) { $fta = "SetUserFTA" }   # Fallback auf PATH-Shim
+    & $fta http  ChromeHTML
+    & $fta https ChromeHTML
+    & $fta .htm  ChromeHTML
+    & $fta .html ChromeHTML
+    & $fta .pdf  ChromeHTML
 }
