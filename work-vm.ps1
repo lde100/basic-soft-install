@@ -12,8 +12,8 @@ $steps = [ordered]@{
             'chocolateygui','googlechrome','git.install','vscode.install','claude','claude-code',
             '7zip','vlc','irfanview','irfanview-languages','irfanviewplugins',
             'obs-studio.install','mediainfo','teamviewer','putty.install','winscp.install',
-            'filezilla','sharex','bitwarden','drawio'
-        ) }
+            'filezilla','sharex','bitwarden','drawio','setuserfta'
+        ) -IgnoreChecksumFor @('googlechrome') }
     "Office 365 (inkl. Outlook classic)" = { Install-Office -Product "O365ProPlusRetail" -Language "de-de" }
     "Dark Mode"                      = { Enable-DarkMode }
     "Explorer-Tweaks"                = { Set-ExplorerTweaks }

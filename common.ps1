@@ -30,13 +30,31 @@ function Install-Chocolatey {
 }
 
 function Install-Packages {
-    param([Parameter(Mandatory)][string[]] $Packages)
+    param(
+        [Parameter(Mandatory)][string[]] $Packages,
+        [string[]] $IgnoreChecksumFor = @()
+    )
     Write-Output "`nInstall Packages: $($Packages -join ' ')`n"
     $i = 0
     foreach ($p in $Packages) {
         $i++
         Update-GuiStatus ("Installiere {0} ({1}/{2})" -f $p, $i, $Packages.Count)
-        choco install $p -y
+        if ($IgnoreChecksumFor -contains $p) {
+            choco install $p -y --ignore-checksums
+        } else {
+            choco install $p -y
+        }
+    }
+}
+
+function Set-RegValue {
+    # toleranter Registry-Write: blockierte/geschuetzte Werte killen nicht den ganzen Schritt
+    param([string]$Path,[string]$Name,$Value,[string]$Type="Dword")
+    try {
+        if (!(Test-Path $Path)) { New-Item $Path -Force | Out-Null }
+        New-ItemProperty -Path $Path -Name $Name -Value $Value -PropertyType $Type -Force -ErrorAction Stop | Out-Null
+    } catch {
+        Write-Log ("Reg-Wert '{0}\{1}' nicht setzbar: {2}" -f $Path, $Name, $_.Exception.Message) "WARN"
     }
 }
 
@@ -48,31 +66,29 @@ function Enable-DarkMode {
 }
 
 function Set-ExplorerTweaks {
-    # Show "This PC" icon on desktop
     Write-Output "Show Computer Shortcut on Desktop`n"
-    $p = "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\HideDesktopIcons\NewStartPanel"
-    if (!(Test-Path $p)) { New-Item $p -Force | Out-Null }
-    Set-ItemProperty $p "{20D04FE0-3AEA-1069-A2D8-08002B30309D}" -Value 0 -Type Dword -Force
+    Set-RegValue "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\HideDesktopIcons\NewStartPanel" "{20D04FE0-3AEA-1069-A2D8-08002B30309D}" 0
 
     $adv = "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced"
 
     Write-Output "Disable Taskbar Widgets / Task View`n"
-    Set-ItemProperty -Path $adv -Name TaskbarDa          -Value 0 -Type Dword -Force
-    Set-ItemProperty -Path $adv -Name TaskbarMn          -Value 0 -Type Dword -Force
-    Set-ItemProperty -Path $adv -Name ShowTaskViewButton -Value 0 -Type Dword -Force
+    Set-RegValue $adv "TaskbarDa" 0
+    Set-RegValue $adv "TaskbarMn" 0
+    Set-RegValue $adv "ShowTaskViewButton" 0
+    # zuverlaessiger Widgets-Kill per Policy (HKLM, braucht Admin) - unabhaengig vom HKCU-Quirk
+    Set-RegValue "HKLM:\SOFTWARE\Policies\Microsoft\Dsh" "AllowNewsAndInterests" 0
 
     Write-Output "Disable Taskbar Search`n"
-    Set-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Search" `
-        -Name SearchboxTaskbarMode -Value 0 -Type Dword -Force
+    Set-RegValue "HKCU:\Software\Microsoft\Windows\CurrentVersion\Search" "SearchboxTaskbarMode" 0
 
     Write-Output "File Explorer opens This PC`n"
-    Set-ItemProperty -Path $adv -Name LaunchTo -Value 1 -Type Dword -Force
+    Set-RegValue $adv "LaunchTo" 1
 
     Write-Output "Show File Extensions`n"
-    Set-ItemProperty -Path $adv -Name HideFileExt -Value 0 -Type Dword -Force
+    Set-RegValue $adv "HideFileExt" 0
 
     Write-Output "Show All Folders in Navigation Panel`n"
-    Set-ItemProperty -Path $adv -Name NavPaneShowAllFolders -Value 1 -Type Dword -Force
+    Set-RegValue $adv "NavPaneShowAllFolders" 1
 }
 
 function Restore-ClassicContextMenu {
@@ -224,7 +240,9 @@ function Set-DefaultBrowserChrome {
     # zurueckgesetzt. SetUserFTA (Choco: setuserfta) erzeugt den gueltigen Hash.
     # Laeuft im Kontext des AUSFUEHRENDEN Users -> Script als der Zielnutzer (mit UAC) starten.
     Write-Output "`nSet Chrome as default for browser + PDF`n"
-    $fta = Join-Path $env:ChocolateyInstall "bin\SetUserFTA.exe"
+    $base = $env:ChocolateyInstall
+    if (-not $base) { $base = "C:\ProgramData\chocolatey" }
+    $fta = Join-Path $base "bin\SetUserFTA.exe"
     if (-not (Test-Path $fta)) { $fta = "SetUserFTA" }   # Fallback auf PATH-Shim
     & $fta http  ChromeHTML
     & $fta https ChromeHTML
