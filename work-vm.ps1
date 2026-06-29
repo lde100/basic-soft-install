@@ -7,7 +7,7 @@ Install-Chocolatey
 
 # Software
 Install-Packages @(
-    'chocolateygui','googlechrome','git.install','vscode.install','claude',
+    'chocolateygui','googlechrome','git.install','vscode.install','claude','claude-code',
     '7zip','vlc','irfanview','irfanview-languages','irfanviewplugins',
     'obs-studio.install','mediainfo','teamviewer','putty.install','winscp.install',
     'filezilla','sharex','bitwarden','drawio'
