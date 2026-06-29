@@ -32,7 +32,12 @@ function Install-Chocolatey {
 function Install-Packages {
     param([Parameter(Mandatory)][string[]] $Packages)
     Write-Output "`nInstall Packages: $($Packages -join ' ')`n"
-    choco install @Packages -y
+    $i = 0
+    foreach ($p in $Packages) {
+        $i++
+        Update-GuiStatus ("Installiere {0} ({1}/{2})" -f $p, $i, $Packages.Count)
+        choco install $p -y
+    }
 }
 
 function Enable-DarkMode {
@@ -226,4 +231,150 @@ function Set-DefaultBrowserChrome {
     & $fta .htm  ChromeHTML
     & $fta .html ChromeHTML
     & $fta .pdf  ChromeHTML
+}
+
+# ==========================================================================
+#  Logging (%TEMP%) + GUI-Fortschritt
+# ==========================================================================
+
+$script:LogFile   = $null
+$script:Gui       = $null
+$script:StepNo    = 0
+$script:StepTotal = 0
+
+function Start-InstallLog {
+    param([string] $Name = "basic-soft-install")
+    $stamp = Get-Date -Format "yyyyMMdd_HHmmss"
+    $script:LogFile = Join-Path $env:TEMP "$($Name)_$stamp.log"
+    try { Start-Transcript -Path $script:LogFile -Append -ErrorAction Stop | Out-Null } catch {}
+    Write-Log "Logdatei: $script:LogFile"
+}
+
+function Write-Log {
+    param([string] $Message, [ValidateSet("INFO","WARN","ERROR")][string] $Level = "INFO")
+    $line = "{0} [{1}] {2}" -f (Get-Date -Format "HH:mm:ss"), $Level, $Message
+    if ($script:LogFile) { Add-Content -Path $script:LogFile -Value $line -ErrorAction SilentlyContinue }
+    switch ($Level) {
+        "ERROR" { Write-Host $line -ForegroundColor Red }
+        "WARN"  { Write-Host $line -ForegroundColor Yellow }
+        default { Write-Host $line }
+    }
+    if ($script:Gui) {
+        try {
+            $script:Gui.Box.AppendText($line + [Environment]::NewLine)
+            [System.Windows.Forms.Application]::DoEvents()
+        } catch {}
+    }
+}
+
+function Initialize-ProgressGui {
+    param([string] $Title = "Basic Soft Install")
+    try {
+        Add-Type -AssemblyName System.Windows.Forms
+        Add-Type -AssemblyName System.Drawing
+        $f = New-Object System.Windows.Forms.Form
+        $f.Text = $Title
+        $f.Size = New-Object System.Drawing.Size(660,440)
+        $f.StartPosition = "CenterScreen"
+        $f.TopMost = $true
+        $f.FormBorderStyle = "FixedDialog"
+        $f.MaximizeBox = $false; $f.MinimizeBox = $true
+
+        $lbl = New-Object System.Windows.Forms.Label
+        $lbl.Location = New-Object System.Drawing.Point(12,12)
+        $lbl.Size = New-Object System.Drawing.Size(630,20)
+        $lbl.Text = "Starte..."
+
+        $bar = New-Object System.Windows.Forms.ProgressBar
+        $bar.Location = New-Object System.Drawing.Point(12,38)
+        $bar.Size = New-Object System.Drawing.Size(630,24)
+        $bar.Style = "Marquee"; $bar.MarqueeAnimationSpeed = 30
+
+        $box = New-Object System.Windows.Forms.TextBox
+        $box.Location = New-Object System.Drawing.Point(12,72)
+        $box.Size = New-Object System.Drawing.Size(630,320)
+        $box.Multiline = $true
+        $box.ScrollBars = "Vertical"
+        $box.ReadOnly = $true
+        $box.BackColor = [System.Drawing.Color]::Black
+        $box.ForeColor = [System.Drawing.Color]::LightGray
+        $box.Font = New-Object System.Drawing.Font("Consolas",9)
+
+        $f.Controls.AddRange(@($lbl,$bar,$box))
+        $f.Show(); $f.Refresh()
+        [System.Windows.Forms.Application]::DoEvents()
+        $script:Gui = @{ Form=$f; Bar=$bar; Box=$box; Label=$lbl }
+    } catch {
+        $script:Gui = $null
+        Write-Log "GUI nicht verfuegbar - nur Konsole/Log. ($($_.Exception.Message))" "WARN"
+    }
+}
+
+function Update-GuiStatus {
+    # aktualisiert Statuszeile + Log, OHNE den Balken weiterzuschieben (haelt Fenster reaktiv)
+    param([string] $Message)
+    if ($script:Gui) {
+        try {
+            $script:Gui.Label.Text = $Message
+            $script:Gui.Form.Refresh()
+            [System.Windows.Forms.Application]::DoEvents()
+        } catch {}
+    }
+    Write-Log $Message
+}
+
+function Step {
+    param([Parameter(Mandatory)][string] $Message)
+    $script:StepNo++
+    if ($script:Gui) {
+        try {
+            if ($script:StepTotal -gt 0) {
+                $v = [math]::Min($script:StepNo, $script:StepTotal)
+                $script:Gui.Bar.Value = $v
+                $pct = [int](($v / $script:StepTotal) * 100)
+                $script:Gui.Label.Text = "[$pct%] $Message"
+            } else {
+                $script:Gui.Label.Text = $Message
+            }
+            $script:Gui.Form.Refresh()
+            [System.Windows.Forms.Application]::DoEvents()
+        } catch {}
+    }
+    Write-Log "==> $Message"
+}
+
+function Invoke-Steps {
+    # [ordered]@{ "Name" = { scriptblock }; ... }
+    param([Parameter(Mandatory)][System.Collections.Specialized.OrderedDictionary] $Steps)
+    $script:StepTotal = $Steps.Count
+    $script:StepNo = 0
+    if ($script:Gui) {
+        try { $script:Gui.Bar.Style="Continuous"; $script:Gui.Bar.Minimum=0; $script:Gui.Bar.Maximum=$Steps.Count } catch {}
+    }
+    foreach ($name in $Steps.Keys) {
+        Step $name
+        try { & $Steps[$name] }
+        catch { Write-Log "FEHLER bei '$name': $($_.Exception.Message)" "ERROR" }
+    }
+}
+
+function Complete-InstallGui {
+    param([string] $Message = "Setup abgeschlossen.")
+    if ($script:Gui) {
+        try {
+            $script:Gui.Bar.Style = "Continuous"
+            $script:Gui.Bar.Maximum = [math]::Max(1,$script:Gui.Bar.Maximum)
+            $script:Gui.Bar.Value = $script:Gui.Bar.Maximum
+            $script:Gui.Label.Text = $Message
+            $script:Gui.Form.Text += "  -  fertig (Fenster schliessen)"
+            $script:Gui.Form.Refresh()
+            [System.Windows.Forms.Application]::DoEvents()
+        } catch {}
+    }
+    Write-Log $Message
+    try { Stop-Transcript | Out-Null } catch {}
+    # Fenster offen halten bis der User schliesst, damit er das Log lesen kann
+    if ($script:Gui) {
+        try { while ($script:Gui.Form.Visible) { [System.Windows.Forms.Application]::DoEvents(); Start-Sleep -Milliseconds 150 } } catch {}
+    }
 }
