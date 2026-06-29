@@ -248,7 +248,7 @@ function Set-DefaultBrowserChrome {
     & $fta https ChromeHTML
     & $fta .htm  ChromeHTML
     & $fta .html ChromeHTML
-    & $fta .pdf  ChromeHTML
+    & $fta .pdf  ChromePDF
 }
 
 # ==========================================================================
